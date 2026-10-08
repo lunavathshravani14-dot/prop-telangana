@@ -1,13 +1,13 @@
-// Prisma Schema for PropTelangana Platform
-// Configured with SQLite for local dev & PostgreSQL schema for production
+// Production PostgreSQL Schema for PropTelangana Platform
+// Used with Neon, Supabase, AWS RDS, Railway, or local PostgreSQL
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -16,9 +16,9 @@ model User {
   email        String       @unique
   passwordHash String
   phone        String?
-  role         String       @default("USER") // SUPER_ADMIN, ADMIN, EDITOR, AGENT, USER
+  role         String       @default("USER")
   avatar       String?
-  status       String       @default("ACTIVE") // ACTIVE, INACTIVE, SUSPENDED
+  status       String       @default("ACTIVE")
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   
@@ -45,8 +45,8 @@ model Permission {
   id        String   @id @default(uuid())
   roleId    String
   role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  action    String   // e.g. "CREATE", "READ", "UPDATE", "DELETE"
-  subject   String   // e.g. "PROPERTY", "PROJECT", "LEAD", "USER"
+  action    String
+  subject   String
   createdAt DateTime @default(now())
 }
 
@@ -56,7 +56,7 @@ model Developer {
   slug            String     @unique
   logo            String?
   coverImage      String?
-  description     String?
+  description     String?    @db.Text
   website         String?
   phone           String?
   email           String?
@@ -64,7 +64,7 @@ model Developer {
   experienceYears Int?       @default(0)
   verified        Boolean    @default(false)
   reraRegistered  Boolean    @default(true)
-  socialLinks     String?    // JSON string
+  socialLinks     String?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
@@ -78,11 +78,11 @@ model Location {
   id          String     @id @default(uuid())
   name        String
   slug        String     @unique
-  type        String     @default("LOCALITY") // STATE, DISTRICT, CITY, LOCALITY
+  type        String     @default("LOCALITY")
   parentId    String?
   parent      Location?  @relation("LocationHierarchy", fields: [parentId], references: [id])
   children    Location[] @relation("LocationHierarchy")
-  description String?
+  description String?    @db.Text
   coverImage  String?
   avgPriceSqft Float?
   popular     Boolean    @default(false)
@@ -103,36 +103,36 @@ model Amenity {
   name        String
   slug        String            @unique
   icon        String?
-  category    String            @default("CONVENIENCE") // SAFETY, LEISURE, SPORTS, CONVENIENCE, ECO
+  category    String            @default("CONVENIENCE")
   createdAt   DateTime          @default(now())
   properties  PropertyAmenity[]
 }
 
 model Property {
   id                 String            @id @default(uuid())
-  propertyId         String            @unique // Display ID e.g. "PT-PROP-1001"
+  propertyId         String            @unique
   title              String
   slug               String            @unique
-  description        String
-  propertyType       String            // APARTMENT, VILLA, PLOT, COMMERCIAL, LAND, INDEPENDENT_HOUSE
-  listingType        String            @default("BUY") // BUY, RENT
+  description        String            @db.Text
+  propertyType       String
+  listingType        String            @default("BUY")
   price              Float
   minPrice           Float?
   maxPrice           Float?
-  priceDisplay       String?           // e.g. "₹ 1.85 Cr"
+  priceDisplay       String?
   area               Float
-  areaUnit           String            @default("sqft") // sqft, sqyd, acres
+  areaUnit           String            @default("sqft")
   bedrooms           Int?
   bathrooms          Int?
   balconies          Int?
   floor              Int?
   totalFloors        Int?
-  facing             String?           // East, West, North, South, North-East, etc.
-  furnishing         String?           @default("UNFURNISHED") // UNFURNISHED, SEMI_FURNISHED, FULLY_FURNISHED
-  possessionStatus   String            @default("READY_TO_MOVE") // READY_TO_MOVE, UNDER_CONSTRUCTION, RESALE, NEW_LAUNCH
+  facing             String?
+  furnishing         String?           @default("UNFURNISHED")
+  possessionStatus   String            @default("READY_TO_MOVE")
   constructionStatus String?
   reraNumber         String?
-  approvalInfo       String?           // HMDA, DTCP, GHMC, RERA Approved
+  approvalInfo       String?
   address            String
   locality           String
   city               String            @default("Hyderabad")
@@ -151,7 +151,7 @@ model Property {
   locationId         String?
   locationRef        Location?         @relation(fields: [locationId], references: [id])
 
-  status             String            @default("PUBLISHED") // DRAFT, PENDING_REVIEW, PUBLISHED, FEATURED, SOLD, RENTED, ARCHIVED
+  status             String            @default("PUBLISHED")
   featured           Boolean           @default(false)
   viewsCount         Int               @default(0)
   publishedAt        DateTime?         @default(now())
@@ -206,7 +206,7 @@ model PropertyDocument {
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   name       String
   fileUrl    String
-  fileType   String?  // brochure, floorplan, rera, approval
+  fileType   String?
   fileSize   String?
   createdAt  DateTime @default(now())
 
@@ -225,35 +225,35 @@ model PropertyAmenity {
 
 model Project {
   id               String            @id @default(uuid())
-  projectId        String            @unique // e.g. "PT-PRJ-2001"
+  projectId        String            @unique
   name             String
   slug             String            @unique
-  description      String
+  description      String            @db.Text
   developerId      String?
   developer        Developer?        @relation(fields: [developerId], references: [id])
   location         String
   city             String            @default("Hyderabad")
   district         String            @default("Hyderabad")
-  projectType      String            // LUXURY_APARTMENTS, GATED_COMMUNITY_VILLAS, PLOTTED_DEVELOPMENT, COMMERCIAL_COMPLEX
-  totalArea        String?           // e.g. "25 Acres"
-  totalUnits       String?           // e.g. "450 Units"
-  plotSizes        String?           // e.g. "200 - 500 Sq.Yds"
-  villaSizes       String?           // e.g. "3500 - 6500 Sq.Ft"
-  apartmentSizes   String?           // e.g. "2, 3 & 4 BHK (1450 - 3800 Sq.Ft)"
+  projectType      String
+  totalArea        String?
+  totalUnits       String?
+  plotSizes        String?
+  villaSizes       String?
+  apartmentSizes   String?
   minPrice         Float?
   maxPrice         Float?
-  priceRange       String?           // e.g. "₹ 1.25 Cr - ₹ 4.50 Cr"
-  possessionDate   String?           // e.g. "December 2026"
+  priceRange       String?
+  possessionDate   String?
   reraNumber       String?
-  approvalDetails  String?           // HMDA & RERA Approved
-  amenitiesList    String?           // Comma separated or JSON string
-  connectivity     String?           // Bullet points / JSON string
+  approvalDetails  String?
+  amenitiesList    String?           @db.Text
+  connectivity     String?           @db.Text
   brochureUrl      String?
   latitude         Float?
   longitude        Float?
   contactPhone     String?
   contactEmail     String?
-  status           String            @default("ONGOING") // UPCOMING, ONGOING, READY_TO_MOVE, COMPLETED
+  status           String            @default("ONGOING")
   featured         Boolean           @default(false)
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
@@ -318,7 +318,7 @@ model Agent {
   phone        String
   designation  String     @default("Senior Property Consultant")
   photo        String?
-  bio          String?
+  bio          String?    @db.Text
   reraNumber   String?
   status       String     @default("ACTIVE")
   createdAt    DateTime   @default(now())
@@ -332,7 +332,7 @@ model Agent {
 
 model Lead {
   id             String              @id @default(uuid())
-  leadId         String              @unique // e.g. "PT-LD-1001"
+  leadId         String              @unique
   name           String
   phone          String
   email          String?
@@ -340,7 +340,7 @@ model Lead {
   property       Property?           @relation(fields: [propertyId], references: [id])
   projectId      String?
   project        Project?            @relation(fields: [projectId], references: [id])
-  message        String?
+  message        String?             @db.Text
   source         String              @default("WEBSITE")
   utmSource      String?
   utmMedium      String?
@@ -348,8 +348,8 @@ model Lead {
   pageUrl        String?
   assignedAgentId String?
   assignedAgent  Agent?              @relation(fields: [assignedAgentId], references: [id])
-  status         String              @default("NEW") // NEW, CONTACTED, INTERESTED, SITE_VISIT, NEGOTIATION, CONVERTED, LOST, CLOSED
-  priority       String              @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status         String              @default("NEW")
+  priority       String              @default("MEDIUM")
   nextFollowUp   DateTime?
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
@@ -369,7 +369,7 @@ model LeadNote {
   lead       Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
   authorId   String?
   authorName String   @default("Admin")
-  note       String
+  note       String   @db.Text
   createdAt  DateTime @default(now())
 
   @@index([leadId])
@@ -420,17 +420,17 @@ model BlogPost {
   title         String
   slug          String        @unique
   featuredImage String?
-  content       String
-  excerpt       String?
+  content       String        @db.Text
+  excerpt       String?       @db.Text
   categoryId    String?
   category      BlogCategory? @relation(fields: [categoryId], references: [id])
   authorId      String?
   author        User?         @relation(fields: [authorId], references: [id])
   authorName    String        @default("PropTelangana Editorial")
-  tags          String?       // comma separated
+  tags          String?
   seoTitle      String?
   metaDescription String?
-  status        String        @default("PUBLISHED") // DRAFT, PUBLISHED, ARCHIVED
+  status        String        @default("PUBLISHED")
   viewsCount    Int           @default(0)
   publishedAt   DateTime?     @default(now())
   createdAt     DateTime      @default(now())
@@ -455,7 +455,7 @@ model Notification {
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   title     String
   message   String
-  type      String   @default("LEAD") // LEAD, PROPERTY, SYSTEM
+  type      String   @default("LEAD")
   isRead    Boolean  @default(false)
   link      String?
   createdAt DateTime @default(now())
@@ -466,7 +466,7 @@ model Notification {
 model SiteSetting {
   id          String   @id @default(uuid())
   key         String   @unique
-  value       String
+  value       String   @db.Text
   description String?
   updatedAt   DateTime @updatedAt
 }
@@ -476,10 +476,10 @@ model AuditLog {
   userId    String?
   user      User?    @relation(fields: [userId], references: [id])
   userEmail String?
-  action    String   // CREATE, UPDATE, DELETE, PUBLISH, UNPUBLISH, ASSIGN
-  entity    String   // PROPERTY, PROJECT, LEAD, DEVELOPER, USER, BLOG
+  action    String
+  entity    String
   entityId  String
-  metadata  String?  // JSON string
+  metadata  String?  @db.Text
   ipAddress String?
   createdAt DateTime @default(now())
 
