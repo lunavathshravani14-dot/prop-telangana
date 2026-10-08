@@ -11,17 +11,22 @@ export const metadata = {
 };
 
 export default async function ResidentialPage() {
-  const properties = await prisma.property.findMany({
-    where: {
-      status: 'PUBLISHED',
-      propertyType: { in: ['APARTMENT', 'VILLA', 'INDEPENDENT_HOUSE'] },
-    },
-    orderBy: { createdAt: 'desc' },
-    include: {
-      images: { orderBy: { orderIndex: 'asc' } },
-      developer: { select: { name: true, verified: true } },
-    },
-  });
+  let properties: any[] = [];
+  try {
+    properties = await prisma.property.findMany({
+      where: {
+        status: 'PUBLISHED',
+        propertyType: { in: ['APARTMENT', 'VILLA', 'INDEPENDENT_HOUSE'] },
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        images: { orderBy: { orderIndex: 'asc' } },
+        developer: { select: { name: true, verified: true } },
+      },
+    });
+  } catch (err) {
+    console.error('ResidentialPage build/fetch error:', err);
+  }
 
   return (
     <div className="pt-24 pb-20 bg-slate-50 min-h-screen">

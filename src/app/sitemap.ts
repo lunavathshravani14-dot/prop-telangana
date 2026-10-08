@@ -4,25 +4,35 @@ import prisma from '@/lib/prisma';
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://proptelangana.com';
 
-  const [properties, projects, developers, locations, blogs] = await Promise.all([
-    prisma.property.findMany({
-      where: { status: 'PUBLISHED' },
-      select: { slug: true, updatedAt: true },
-    }),
-    prisma.project.findMany({
-      select: { slug: true, updatedAt: true },
-    }),
-    prisma.developer.findMany({
-      select: { slug: true, updatedAt: true },
-    }),
-    prisma.location.findMany({
-      select: { slug: true, updatedAt: true },
-    }),
-    prisma.blogPost.findMany({
-      where: { status: 'PUBLISHED' },
-      select: { slug: true, updatedAt: true },
-    }),
-  ]);
+  let properties: { slug: string; updatedAt: Date }[] = [];
+  let projects: { slug: string; updatedAt: Date }[] = [];
+  let developers: { slug: string; updatedAt: Date }[] = [];
+  let locations: { slug: string; updatedAt: Date }[] = [];
+  let blogs: { slug: string; updatedAt: Date }[] = [];
+
+  try {
+    [properties, projects, developers, locations, blogs] = await Promise.all([
+      prisma.property.findMany({
+        where: { status: 'PUBLISHED' },
+        select: { slug: true, updatedAt: true },
+      }),
+      prisma.project.findMany({
+        select: { slug: true, updatedAt: true },
+      }),
+      prisma.developer.findMany({
+        select: { slug: true, updatedAt: true },
+      }),
+      prisma.location.findMany({
+        select: { slug: true, updatedAt: true },
+      }),
+      prisma.blogPost.findMany({
+        where: { status: 'PUBLISHED' },
+        select: { slug: true, updatedAt: true },
+      }),
+    ]);
+  } catch (err) {
+    console.error('Sitemap build/fetch error:', err);
+  }
 
   const staticRoutes: MetadataRoute.Sitemap = [
     '',

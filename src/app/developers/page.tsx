@@ -11,17 +11,22 @@ export const metadata = {
 };
 
 export default async function DevelopersPage() {
-  const developers = await prisma.developer.findMany({
-    orderBy: { experienceYears: 'desc' },
-    include: {
-      _count: {
-        select: {
-          properties: true,
-          projects: true,
+  let developers: any[] = [];
+  try {
+    developers = await prisma.developer.findMany({
+      orderBy: { experienceYears: 'desc' },
+      include: {
+        _count: {
+          select: {
+            properties: true,
+            projects: true,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (err) {
+    console.error('DevelopersPage build/fetch error:', err);
+  }
 
   return (
     <div className="pt-24 pb-20 bg-slate-50 min-h-screen">

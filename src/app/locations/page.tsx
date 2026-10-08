@@ -11,12 +11,17 @@ export const metadata = {
 };
 
 export default async function LocationsPage() {
-  const locations = await prisma.location.findMany({
-    orderBy: { avgPriceSqft: 'desc' },
-    include: {
-      _count: { select: { properties: true, projects: true } },
-    },
-  });
+  let locations: any[] = [];
+  try {
+    locations = await prisma.location.findMany({
+      orderBy: { avgPriceSqft: 'desc' },
+      include: {
+        _count: { select: { properties: true, projects: true } },
+      },
+    });
+  } catch (err) {
+    console.error('LocationsPage build/fetch error:', err);
+  }
 
   return (
     <div className="pt-24 pb-20 bg-slate-50 min-h-screen">
