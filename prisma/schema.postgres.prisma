@@ -1,0 +1,488 @@
+// Production PostgreSQL Schema for PropTelangana Platform
+// Used with Neon, Supabase, AWS RDS, Railway, or local PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(uuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  phone        String?
+  role         String       @default("USER")
+  avatar       String?
+  status       String       @default("ACTIVE")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  
+  agent        Agent?
+  favorites    Favorite[]
+  comparisons  Comparison[]
+  auditLogs    AuditLog[]
+  notifications Notification[]
+  blogPosts    BlogPost[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+}
+
+model Permission {
+  id        String   @id @default(uuid())
+  roleId    String
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  action    String
+  subject   String
+  createdAt DateTime @default(now())
+}
+
+model Developer {
+  id              String     @id @default(uuid())
+  name            String
+  slug            String     @unique
+  logo            String?
+  coverImage      String?
+  description     String?    @db.Text
+  website         String?
+  phone           String?
+  email           String?
+  officeAddress   String?
+  experienceYears Int?       @default(0)
+  verified        Boolean    @default(false)
+  reraRegistered  Boolean    @default(true)
+  socialLinks     String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  properties      Property[]
+  projects        Project[]
+
+  @@index([slug])
+}
+
+model Location {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  type        String     @default("LOCALITY")
+  parentId    String?
+  parent      Location?  @relation("LocationHierarchy", fields: [parentId], references: [id])
+  children    Location[] @relation("LocationHierarchy")
+  description String?    @db.Text
+  coverImage  String?
+  avgPriceSqft Float?
+  popular     Boolean    @default(false)
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  properties  Property[]
+  projects    Project[]
+
+  @@index([slug])
+  @@index([type])
+}
+
+model Amenity {
+  id          String            @id @default(uuid())
+  name        String
+  slug        String            @unique
+  icon        String?
+  category    String            @default("CONVENIENCE")
+  createdAt   DateTime          @default(now())
+  properties  PropertyAmenity[]
+}
+
+model Property {
+  id                 String            @id @default(uuid())
+  propertyId         String            @unique
+  title              String
+  slug               String            @unique
+  description        String            @db.Text
+  propertyType       String
+  listingType        String            @default("BUY")
+  price              Float
+  minPrice           Float?
+  maxPrice           Float?
+  priceDisplay       String?
+  area               Float
+  areaUnit           String            @default("sqft")
+  bedrooms           Int?
+  bathrooms          Int?
+  balconies          Int?
+  floor              Int?
+  totalFloors        Int?
+  facing             String?
+  furnishing         String?           @default("UNFURNISHED")
+  possessionStatus   String            @default("READY_TO_MOVE")
+  constructionStatus String?
+  reraNumber         String?
+  approvalInfo       String?
+  address            String
+  locality           String
+  city               String            @default("Hyderabad")
+  district           String            @default("Hyderabad")
+  state              String            @default("Telangana")
+  pincode            String?
+  latitude           Float?
+  longitude          Float?
+  
+  developerId        String?
+  developer          Developer?        @relation(fields: [developerId], references: [id])
+  agentId            String?
+  agent              Agent?            @relation(fields: [agentId], references: [id])
+  projectId          String?
+  project            Project?          @relation(fields: [projectId], references: [id])
+  locationId         String?
+  locationRef        Location?         @relation(fields: [locationId], references: [id])
+
+  status             String            @default("PUBLISHED")
+  featured           Boolean           @default(false)
+  viewsCount         Int               @default(0)
+  publishedAt        DateTime?         @default(now())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  images             PropertyImage[]
+  videos             PropertyVideo[]
+  documents          PropertyDocument[]
+  amenities          PropertyAmenity[]
+  leads              Lead[]
+  favorites          Favorite[]
+  comparisons        Comparison[]
+
+  @@index([slug])
+  @@index([city])
+  @@index([locality])
+  @@index([propertyType])
+  @@index([listingType])
+  @@index([price])
+  @@index([status])
+  @@index([featured])
+}
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+  altText    String?
+  isCover    Boolean  @default(false)
+  orderIndex Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  @@index([propertyId])
+}
+
+model PropertyVideo {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+  title      String?
+  createdAt  DateTime @default(now())
+
+  @@index([propertyId])
+}
+
+model PropertyDocument {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  name       String
+  fileUrl    String
+  fileType   String?
+  fileSize   String?
+  createdAt  DateTime @default(now())
+
+  @@index([propertyId])
+}
+
+model PropertyAmenity {
+  id         String   @id @default(uuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  amenityId  String
+  amenity    Amenity  @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@unique([propertyId, amenityId])
+}
+
+model Project {
+  id               String            @id @default(uuid())
+  projectId        String            @unique
+  name             String
+  slug             String            @unique
+  description      String            @db.Text
+  developerId      String?
+  developer        Developer?        @relation(fields: [developerId], references: [id])
+  location         String
+  city             String            @default("Hyderabad")
+  district         String            @default("Hyderabad")
+  projectType      String
+  totalArea        String?
+  totalUnits       String?
+  plotSizes        String?
+  villaSizes       String?
+  apartmentSizes   String?
+  minPrice         Float?
+  maxPrice         Float?
+  priceRange       String?
+  possessionDate   String?
+  reraNumber       String?
+  approvalDetails  String?
+  amenitiesList    String?           @db.Text
+  connectivity     String?           @db.Text
+  brochureUrl      String?
+  latitude         Float?
+  longitude        Float?
+  contactPhone     String?
+  contactEmail     String?
+  status           String            @default("ONGOING")
+  featured         Boolean           @default(false)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  images           ProjectImage[]
+  videos           ProjectVideo[]
+  documents        ProjectDocument[]
+  properties       Property[]
+  leads            Lead[]
+  favorites        Favorite[]
+  locationRefId    String?
+  locationRef      Location?         @relation(fields: [locationRefId], references: [id])
+
+  @@index([slug])
+  @@index([city])
+  @@index([status])
+}
+
+model ProjectImage {
+  id         String   @id @default(uuid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url        String
+  altText    String?
+  isCover    Boolean  @default(false)
+  orderIndex Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  @@index([projectId])
+}
+
+model ProjectVideo {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url       String
+  title     String?
+  createdAt DateTime @default(now())
+
+  @@index([projectId])
+}
+
+model ProjectDocument {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name      String
+  fileUrl   String
+  fileType  String?
+  createdAt DateTime @default(now())
+
+  @@index([projectId])
+}
+
+model Agent {
+  id           String     @id @default(uuid())
+  userId       String?    @unique
+  user         User?      @relation(fields: [userId], references: [id])
+  employeeId   String     @unique
+  name         String
+  email        String     @unique
+  phone        String
+  designation  String     @default("Senior Property Consultant")
+  photo        String?
+  bio          String?    @db.Text
+  reraNumber   String?
+  status       String     @default("ACTIVE")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  properties   Property[]
+  leads        Lead[]
+
+  @@index([employeeId])
+}
+
+model Lead {
+  id             String              @id @default(uuid())
+  leadId         String              @unique
+  name           String
+  phone          String
+  email          String?
+  propertyId     String?
+  property       Property?           @relation(fields: [propertyId], references: [id])
+  projectId      String?
+  project        Project?            @relation(fields: [projectId], references: [id])
+  message        String?             @db.Text
+  source         String              @default("WEBSITE")
+  utmSource      String?
+  utmMedium      String?
+  utmCampaign    String?
+  pageUrl        String?
+  assignedAgentId String?
+  assignedAgent  Agent?              @relation(fields: [assignedAgentId], references: [id])
+  status         String              @default("NEW")
+  priority       String              @default("MEDIUM")
+  nextFollowUp   DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  notes          LeadNote[]
+  statusHistory  LeadStatusHistory[]
+
+  @@index([leadId])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+}
+
+model LeadNote {
+  id         String   @id @default(uuid())
+  leadId     String
+  lead       Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  authorId   String?
+  authorName String   @default("Admin")
+  note       String   @db.Text
+  createdAt  DateTime @default(now())
+
+  @@index([leadId])
+}
+
+model LeadStatusHistory {
+  id          String   @id @default(uuid())
+  leadId      String
+  lead        Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  oldStatus   String?
+  newStatus   String
+  changedById String?
+  remarks     String?
+  createdAt   DateTime @default(now())
+
+  @@index([leadId])
+}
+
+model Favorite {
+  id         String    @id @default(uuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  projectId  String?
+  project    Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+
+  @@unique([userId, propertyId])
+  @@index([userId])
+}
+
+model Comparison {
+  id         String   @id @default(uuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId  String?
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([sessionId])
+}
+
+model BlogPost {
+  id            String        @id @default(uuid())
+  title         String
+  slug          String        @unique
+  featuredImage String?
+  content       String        @db.Text
+  excerpt       String?       @db.Text
+  categoryId    String?
+  category      BlogCategory? @relation(fields: [categoryId], references: [id])
+  authorId      String?
+  author        User?         @relation(fields: [authorId], references: [id])
+  authorName    String        @default("PropTelangana Editorial")
+  tags          String?
+  seoTitle      String?
+  metaDescription String?
+  status        String        @default("PUBLISHED")
+  viewsCount    Int           @default(0)
+  publishedAt   DateTime?     @default(now())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([slug])
+  @@index([status])
+}
+
+model BlogCategory {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  description String?
+  createdAt   DateTime   @default(now())
+  posts       BlogPost[]
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("LEAD")
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model SiteSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String   @db.Text
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  userEmail String?
+  action    String
+  entity    String
+  entityId  String
+  metadata  String?  @db.Text
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  @@index([entity])
+  @@index([createdAt])
+}
