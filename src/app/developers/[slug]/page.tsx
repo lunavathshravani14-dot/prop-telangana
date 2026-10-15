@@ -6,6 +6,8 @@ import { Building2, CheckCircle2, Phone, Mail, Globe, MapPin, ArrowRight } from 
 import ProjectCard from '@/components/ProjectCard';
 import PropertyCard from '@/components/PropertyCard';
 
+import { JB_DEVELOPER, JB_PROJECTS, JB_PROPERTIES } from '@/lib/jb-projects-data';
+
 export const revalidate = 60;
 
 interface DeveloperProfilePageProps {
@@ -13,25 +15,41 @@ interface DeveloperProfilePageProps {
 }
 
 export default async function DeveloperProfilePage({ params }: DeveloperProfilePageProps) {
-  const developer = await prisma.developer.findFirst({
-    where: {
-      OR: [{ slug: params.slug }, { id: params.slug }],
-    },
-    include: {
-      projects: {
-        include: {
-          images: { orderBy: { orderIndex: 'asc' } },
+  let developer: any = null;
+
+  try {
+    developer = await prisma.developer.findFirst({
+      where: {
+        OR: [{ slug: params.slug }, { id: params.slug }],
+      },
+      include: {
+        projects: {
+          include: {
+            images: { orderBy: { orderIndex: 'asc' } },
+          },
+        },
+        properties: {
+          where: { status: 'PUBLISHED' },
+          include: {
+            images: { where: { isCover: true } },
+            developer: { select: { name: true, verified: true } },
+          },
         },
       },
-      properties: {
-        where: { status: 'PUBLISHED' },
-        include: {
-          images: { where: { isCover: true } },
-          developer: { select: { name: true, verified: true } },
-        },
-      },
-    },
-  });
+    });
+  } catch (err) {
+    console.warn('Database offline on developer detail, serving from memory:', err);
+  }
+
+  if (!developer) {
+    if (params.slug === 'jb-infra-group' || params.slug === 'jb-infra' || params.slug === JB_DEVELOPER.id) {
+      developer = {
+        ...JB_DEVELOPER,
+        projects: JB_PROJECTS,
+        properties: JB_PROPERTIES,
+      };
+    }
+  }
 
   if (!developer) notFound();
 

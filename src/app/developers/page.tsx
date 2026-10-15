@@ -3,11 +3,13 @@ import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import { Building2, CheckCircle2, ArrowRight } from 'lucide-react';
 
+import { JB_DEVELOPER } from '@/lib/jb-projects-data';
+
 export const revalidate = 60;
 
 export const metadata = {
   title: 'Top Real Estate Developers in Telangana & Hyderabad | PropTelangana',
-  description: 'Verified builder directory including My Home Group, Aparna Constructions, Rajapushpa, Prestige, and Brigade.',
+  description: 'Verified builder directory including JB Infra Group, My Home Group, Aparna Constructions, and Prestige.',
 };
 
 export default async function DevelopersPage() {
@@ -25,7 +27,11 @@ export default async function DevelopersPage() {
       },
     });
   } catch (err) {
-    console.error('DevelopersPage build/fetch error:', err);
+    console.warn('DevelopersPage build/fetch error:', err);
+  }
+
+  if (developers.length === 0) {
+    developers = [JB_DEVELOPER];
   }
 
   return (

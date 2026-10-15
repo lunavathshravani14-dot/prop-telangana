@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import PropertyCard from '@/components/PropertyCard';
 
+import { JB_PROJECTS } from '@/lib/jb-projects-data';
+
 export const revalidate = 60;
 
 interface ProjectDetailPageProps {
@@ -23,22 +25,39 @@ interface ProjectDetailPageProps {
 }
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
-  const project = await prisma.project.findFirst({
-    where: {
-      OR: [{ slug: params.slug }, { id: params.slug }, { projectId: params.slug }],
-    },
-    include: {
-      images: { orderBy: { orderIndex: 'asc' } },
-      developer: true,
-      properties: {
-        where: { status: 'PUBLISHED' },
-        include: {
-          images: { where: { isCover: true } },
-          developer: { select: { name: true, verified: true } },
+  let project: any = null;
+
+  try {
+    project = await prisma.project.findFirst({
+      where: {
+        OR: [{ slug: params.slug }, { id: params.slug }, { projectId: params.slug }],
+      },
+      include: {
+        images: { orderBy: { orderIndex: 'asc' } },
+        developer: true,
+        properties: {
+          where: { status: 'PUBLISHED' },
+          include: {
+            images: { where: { isCover: true } },
+            developer: { select: { name: true, verified: true } },
+          },
         },
       },
-    },
-  });
+    });
+  } catch (err) {
+    console.warn('Database offline on project detail, serving from memory:', err);
+  }
+
+  if (!project) {
+    project = JB_PROJECTS.find(
+      (p) =>
+        p.slug === params.slug ||
+        p.slug.startsWith(params.slug) ||
+        params.slug.startsWith(p.slug.split('-')[0]) ||
+        p.id === params.slug ||
+        p.projectId === params.slug
+    );
+  }
 
   if (!project) notFound();
 

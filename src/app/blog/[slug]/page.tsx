@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Calendar, User, ArrowLeft, Tag, Share2 } from 'lucide-react';
 
+import { DEFAULT_BLOGS } from '@/lib/jb-projects-data';
+
 export const revalidate = 60;
 
 interface BlogPostPageProps {
@@ -11,10 +13,19 @@ interface BlogPostPageProps {
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps) {
-  const post = await prisma.blogPost.findFirst({
-    where: { OR: [{ slug: params.slug }, { id: params.slug }] },
-    select: { title: true, excerpt: true, featuredImage: true },
-  });
+  let post: any = null;
+  try {
+    post = await prisma.blogPost.findFirst({
+      where: { OR: [{ slug: params.slug }, { id: params.slug }] },
+      select: { title: true, excerpt: true, featuredImage: true },
+    });
+  } catch {
+    // ignore
+  }
+
+  if (!post) {
+    post = DEFAULT_BLOGS.find((b) => b.slug === params.slug || b.id === params.slug);
+  }
 
   if (!post) return { title: 'Article Not Found | PropTelangana' };
 
@@ -30,24 +41,40 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = await prisma.blogPost.findFirst({
-    where: {
-      OR: [{ slug: params.slug }, { id: params.slug }],
-    },
-    include: {
-      category: true,
-    },
-  });
+  let post: any = null;
+
+  try {
+    post = await prisma.blogPost.findFirst({
+      where: {
+        OR: [{ slug: params.slug }, { id: params.slug }],
+      },
+      include: {
+        category: true,
+      },
+    });
+  } catch (err) {
+    console.warn('Database offline on blog detail, serving fallback article:', err);
+  }
+
+  if (!post) {
+    post = DEFAULT_BLOGS.find((b) => b.slug === params.slug || b.id === params.slug);
+  }
 
   if (!post) notFound();
 
-  // Increment view counter
-  prisma.blogPost
-    .update({
-      where: { id: post.id },
-      data: { viewsCount: { increment: 1 } },
-    })
-    .catch((err) => console.error(err));
+  // Increment view counter safely
+  try {
+    if (prisma?.blogPost && post.id && !post.id.startsWith('blog-')) {
+      prisma.blogPost
+        .update({
+          where: { id: post.id },
+          data: { viewsCount: { increment: 1 } },
+        })
+        .catch(() => {});
+    }
+  } catch {
+    // ignore
+  }
 
   return (
     <div className="pt-24 pb-20 bg-slate-50 min-h-screen">

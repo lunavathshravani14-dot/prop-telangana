@@ -396,3 +396,89 @@ export const JB_PROPERTIES = [
     createdAt: new Date().toISOString(),
   },
 ];
+
+export const DEFAULT_BLOG_CATEGORIES = [
+  { id: 'cat-legal', name: 'TG-RERA & Legal', slug: 'legal', _count: { posts: 1 } },
+  { id: 'cat-infra', name: 'Infrastructure & RRR', slug: 'infra', _count: { posts: 1 } },
+  { id: 'cat-invest', name: 'Investment Hotspots', slug: 'investment', _count: { posts: 1 } },
+];
+
+export const DEFAULT_BLOGS = [
+  {
+    id: 'blog-1',
+    title: 'Essential Guide to TG-RERA: How to Verify Sanctioned Layouts & Open Plots in Telangana',
+    slug: 'tg-rera-buyer-guide-2025',
+    excerpt: 'Key checklist every plot buyer must follow to verify HMDA and DTCP approvals with TG-RERA project registration before booking.',
+    content: `
+      <h2>Why TG-RERA Verification is Crucial in Telangana</h2>
+      <p>Investing in open villa plots or residential townships around Hyderabad requires thorough due diligence. Under Telangana Real Estate Regulatory Authority (TG-RERA) regulations, every layout spanning more than 500 sq. meters or consisting of more than 8 plots must be registered.</p>
+      
+      <h3>Key Verification Steps</h3>
+      <ul>
+        <li><strong>Verify the Sanctioned Layout Plan (LP No.):</strong> Ensure the developer holds an official LP Number approved by HMDA or DTCP.</li>
+        <li><strong>Cross-Check TG-RERA Registration:</strong> Look for the project's P-series registration code (e.g., P02400008456) on the official TG-RERA portal.</li>
+        <li><strong>Clear Title and 100% Vasthu:</strong> Look for clear title documentation, encumbrance certificates (EC), and demarcated boundaries.</li>
+        <li><strong>Infrastructure Commitments:</strong> Sanctioned townships require underground electricity cabling, drainage lines, overhead water tanks, and BT roads.</li>
+      </ul>
+      
+      <p>All projects listed on PropTelangana, including JB Infra Group ventures like Nature Valley and Serene City, come with 100% verified TG-RERA credentials.</p>
+    `,
+    featuredImage: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+    status: 'PUBLISHED',
+    category: DEFAULT_BLOG_CATEGORIES[0],
+    categoryId: 'cat-legal',
+    authorName: 'PropTelangana Legal Advisory',
+    publishedAt: new Date().toISOString(),
+    viewsCount: 3420,
+  },
+  {
+    id: 'blog-2',
+    title: 'Hyderabad Regional Ring Road (RRR): Future Growth Hotspots on Vijayawada & Sagar Highway',
+    slug: 'hyderabad-regional-ring-road-growth-corridors',
+    excerpt: 'Detailed analysis of how the 340-km Regional Ring Road is transforming real estate appreciation in Choutuppal, Adibatla, and Kongara Kalan.',
+    content: `
+      <h2>The Game-Changing Impact of Hyderabad's 340-KM Regional Ring Road (RRR)</h2>
+      <p>The Telangana government's ambitious Regional Ring Road project is redefining the boundaries of Greater Hyderabad. Connecting key commercial and industrial hubs outside the Outer Ring Road (ORR), the RRR is opening massive capital appreciation corridors.</p>
+      
+      <h3>Major Beneficiary Corridors</h3>
+      <ul>
+        <li><strong>Vijayawada 6-Lane Highway (Choutuppal):</strong> Located just 3 minutes from the proposed RRR intersection, Choutuppal is rapidly transforming into a satellite township hub with major logistics and green industrial parks.</li>
+        <li><strong>Nagarjuna Sagar Highway (Adibatla):</strong> Benefiting from proximity to Foxconn, TCS Adibatla, and the Aerospace SEZ, this corridor offers strong rental and residential plot yields.</li>
+        <li><strong>Kongara Kalan & Pharma City Corridor:</strong> Strategic proximity to the R.R. District Collectorate and Ratan Tata 330 ft. expressway makes this a prime choice for villa plot buyers.</li>
+      </ul>
+    `,
+    featuredImage: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80',
+    status: 'PUBLISHED',
+    category: DEFAULT_BLOG_CATEGORIES[1],
+    categoryId: 'cat-infra',
+    authorName: 'PropTelangana Infrastructure Desk',
+    publishedAt: new Date().toISOString(),
+    viewsCount: 2890,
+  },
+  {
+    id: 'blog-3',
+    title: 'Why Adibatla & Kongara Kalan are Hyderabad’s Next Big Real Estate Investment Hubs',
+    slug: 'adibatla-aerospace-it-boom',
+    excerpt: 'With Foxconn, TCS, Kaynes Semicon, and Aerospace SEZs booming, here is why south Hyderabad plots are yielding unmatched ROI.',
+    content: `
+      <h2>The Industrial & Tech Renaissance in South Hyderabad</h2>
+      <p>South Hyderabad, particularly around Adibatla and Kongara Kalan, is experiencing unprecedented economic momentum with global semiconductor and manufacturing majors setting up multi-billion dollar campuses.</p>
+      
+      <h3>Key Growth Drivers</h3>
+      <ul>
+        <li><strong>Foxconn Megacampus:</strong> Direct employment generation fueling demand for quality residential housing and gated communities.</li>
+        <li><strong>Kaynes Technology & Semicon Park:</strong> India's semiconductor thrust centered right in Kongara Kalan.</li>
+        <li><strong>Seamless ORR Connectivity:</strong> Just 15-20 minutes to Rajiv Gandhi International Airport (RGIA) and Financial District via Outer Ring Road.</li>
+      </ul>
+      <p>Developments like JB's Serene City and Serene County offer HMDA sanctioned layouts with Krishna drinking water pipelines and clubhouses for discerning investors.</p>
+    `,
+    featuredImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+    status: 'PUBLISHED',
+    category: DEFAULT_BLOG_CATEGORIES[2],
+    categoryId: 'cat-invest',
+    authorName: 'Bhaskar Rao',
+    publishedAt: new Date().toISOString(),
+    viewsCount: 4120,
+  },
+];
+

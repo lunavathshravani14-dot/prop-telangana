@@ -3,6 +3,8 @@ import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import { Calendar, User, ArrowRight } from 'lucide-react';
 
+import { DEFAULT_BLOGS, DEFAULT_BLOG_CATEGORIES } from '@/lib/jb-projects-data';
+
 export const revalidate = 60;
 
 export const metadata = {
@@ -15,21 +17,38 @@ export default async function BlogPage({
 }: {
   searchParams: { category?: string };
 }) {
-  const where: any = { status: 'PUBLISHED' };
-  if (searchParams.category) {
-    where.category = { slug: searchParams.category };
+  let posts: any[] = [];
+  let categories: any[] = [];
+
+  try {
+    const where: any = { status: 'PUBLISHED' };
+    if (searchParams.category) {
+      where.category = { slug: searchParams.category };
+    }
+
+    [posts, categories] = await Promise.all([
+      prisma.blogPost.findMany({
+        where,
+        orderBy: { publishedAt: 'desc' },
+        include: { category: true },
+      }),
+      prisma.blogCategory.findMany({
+        include: { _count: { select: { posts: true } } },
+      }),
+    ]);
+  } catch (err) {
+    console.warn('Database offline on blog page, serving fallback articles:', err);
   }
 
-  const [posts, categories] = await Promise.all([
-    prisma.blogPost.findMany({
-      where,
-      orderBy: { publishedAt: 'desc' },
-      include: { category: true },
-    }),
-    prisma.blogCategory.findMany({
-      include: { _count: { select: { posts: true } } },
-    }),
-  ]);
+  if (posts.length === 0) {
+    posts = searchParams.category
+      ? DEFAULT_BLOGS.filter((b) => b.category.slug === searchParams.category)
+      : DEFAULT_BLOGS;
+  }
+
+  if (categories.length === 0) {
+    categories = DEFAULT_BLOG_CATEGORIES;
+  }
 
   return (
     <div className="pt-24 pb-20 bg-slate-50 min-h-screen">
