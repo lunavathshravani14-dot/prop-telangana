@@ -217,12 +217,22 @@ export default function PropertyCard({
         </div>
 
         {/* Footer actions */}
-        <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+        <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-1.5">
+          <a
+            href="tel:+917013873126"
+            className="flex-1 inline-flex items-center justify-center gap-1 py-2 px-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-sm transition-all"
+            title="Call Enquiry Hotline: +91 70138 73126"
+          >
+            <Phone className="w-3.5 h-3.5 animate-pulse" />
+            <span>Call</span>
+          </a>
+
           <a
             href={`https://wa.me/917013873126?text=${whatsappMessage}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1 py-2 px-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition-colors"
+            title="Chat on WhatsApp"
           >
             <MessageCircle className="w-3.5 h-3.5 text-emerald-600 fill-emerald-600" />
             <span>WhatsApp</span>
@@ -230,10 +240,10 @@ export default function PropertyCard({
 
           <button
             onClick={() => (onEnquire ? onEnquire(property) : (window.location.href = `/properties/${property.slug}#enquire`))}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-navy-900 hover:bg-navy-950 text-white text-xs font-bold shadow-sm transition-all"
+            className="inline-flex items-center justify-center py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors"
+            title="View Details & Enquire"
           >
-            <Phone className="w-3.5 h-3.5" />
-            <span>Enquire</span>
+            Details
           </button>
         </div>
       </div>

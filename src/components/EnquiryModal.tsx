@@ -187,6 +187,16 @@ export default function EnquiryModal({ isOpen, onClose, property, project }: Enq
               <p className="text-[11px] text-center text-slate-400">
                 🔒 Your contact info is strictly confidential under PropTelangana Privacy Policy.
               </p>
+
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-center">
+                <a
+                  href="tel:+917013873126"
+                  className="text-xs font-bold text-navy-950 hover:text-brand-600 flex items-center gap-2 py-1.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-200"
+                >
+                  <Phone className="w-3.5 h-3.5 text-brand-600 animate-pulse" />
+                  <span>Immediate Enquiry? Call <strong>+91 70138 73126</strong></span>
+                </a>
+              </div>
             </form>
           </div>
         )}

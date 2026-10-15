@@ -457,6 +457,14 @@ export default function PropertyDetailClient({
                   </button>
 
                   <a
+                    href="tel:+917013873126"
+                    className="w-full py-2.5 bg-navy-900 hover:bg-navy-950 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-2 border border-navy-800"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-brand-400 animate-pulse" />
+                    <span>Direct Call: +91 70138 73126</span>
+                  </a>
+
+                  <a
                     href={`https://wa.me/917013873126?text=${whatsappMessage}`}
                     target="_blank"
                     rel="noopener noreferrer"

@@ -73,7 +73,10 @@ export default function ContactPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-brand-400 shrink-0" />
-                  <span>+91 70138 73126</span>
+                  <a href="tel:+917013873126" className="text-white hover:text-brand-400 font-bold transition-colors flex items-center gap-2">
+                    <span>+91 70138 73126</span>
+                    <span className="text-[10px] bg-brand-600 text-white px-2 py-0.5 rounded-full font-bold">Direct Call</span>
+                  </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-brand-400 shrink-0" />

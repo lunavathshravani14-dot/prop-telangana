@@ -216,12 +216,14 @@ export default function Header() {
                 >
                   Sign In
                 </Link>
-                <Link
-                  href="/contact"
-                  className="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-1.5"
+                <a
+                  href="tel:+917013873126"
+                  className="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-1.5"
+                  title="Call Enquiry Hotline: +91 70138 73126"
                 >
-                  <Phone className="w-3.5 h-3.5" /> Enquire
-                </Link>
+                  <Phone className="w-3.5 h-3.5 animate-pulse" />
+                  <span>Call: +91 70138 73126</span>
+                </a>
               </div>
             )}
           </div>
@@ -307,12 +309,23 @@ export default function Header() {
                 <Link
                   href="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex-1 text-center py-2.5 rounded-lg bg-brand-600 text-white text-sm font-bold shadow"
+                  className="flex-1 text-center py-2.5 rounded-lg bg-slate-900 text-white text-sm font-bold shadow"
                 >
                   Register
                 </Link>
               </div>
             )}
+
+            <div className="pt-2">
+              <a
+                href="tel:+917013873126"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-extrabold shadow-md transition-all"
+              >
+                <Phone className="w-4 h-4 animate-bounce" />
+                <span>Call Enquiry: +91 70138 73126</span>
+              </a>
+            </div>
           </nav>
         </div>
       )}

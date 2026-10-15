@@ -563,18 +563,18 @@ export default async function HomePage() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full sm:w-auto">
-            <Link
-              href="/contact"
+            <a
+              href="tel:+917013873126"
               className="px-8 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-sm rounded-xl shadow-xl transition-all text-center flex items-center justify-center gap-2"
             >
-              <PhoneCall className="w-4 h-4" />
-              <span>Request Free Callback</span>
-            </Link>
+              <PhoneCall className="w-4 h-4 animate-pulse" />
+              <span>Direct Call: +91 70138 73126</span>
+            </a>
             <a
               href="https://wa.me/917013873126"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm rounded-xl border border-white/20 transition-all text-center flex items-center justify-center gap-2"
+              className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl border border-emerald-500 transition-all text-center flex items-center justify-center gap-2"
             >
               <span>Chat on WhatsApp</span>
             </a>

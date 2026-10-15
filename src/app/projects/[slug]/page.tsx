@@ -190,6 +190,14 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
               <div className="space-y-3">
                 <a
+                  href="tel:+917013873126"
+                  className="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-2"
+                >
+                  <Phone className="w-4 h-4 text-white animate-pulse" />
+                  <span>Direct Call: +91 70138 73126</span>
+                </a>
+
+                <a
                   href={`https://wa.me/917013873126?text=${whatsappMessage}`}
                   target="_blank"
                   rel="noopener noreferrer"

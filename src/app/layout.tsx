@@ -3,6 +3,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CompareFloatingBar from '@/components/CompareFloatingBar';
+import FloatingCallButton from '@/components/FloatingCallButton';
 
 export const metadata: Metadata = {
   title: 'PropTelangana | Verified Real Estate, High-Rise Apartments & Plots in Hyderabad',
@@ -53,6 +54,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <CompareFloatingBar />
+        <FloatingCallButton />
         <Footer />
       </body>
     </html>
