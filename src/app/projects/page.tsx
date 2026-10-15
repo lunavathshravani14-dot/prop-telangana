@@ -3,6 +3,8 @@ import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import ProjectCard from '@/components/ProjectCard';
 
+import { JB_PROJECTS } from '@/lib/jb-projects-data';
+
 export const revalidate = 60;
 
 export const metadata = {
@@ -23,14 +25,23 @@ export default async function ProjectsPage({
     where.status = searchParams.status.toUpperCase();
   }
 
-  const projects = await prisma.project.findMany({
-    where,
-    orderBy: { createdAt: 'desc' },
-    include: {
-      images: { orderBy: { orderIndex: 'asc' } },
-      developer: { select: { id: true, name: true, slug: true, logo: true } },
-    },
-  });
+  let projects: any[] = [];
+  try {
+    projects = await prisma.project.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        images: { orderBy: { orderIndex: 'asc' } },
+        developer: { select: { id: true, name: true, slug: true, logo: true } },
+      },
+    });
+  } catch (err) {
+    console.warn('Projects page using JB Infra fallback:', err);
+  }
+
+  if (projects.length === 0) {
+    projects = JB_PROJECTS;
+  }
 
   return (
     <div className="pt-24 pb-20 bg-slate-50 min-h-screen">

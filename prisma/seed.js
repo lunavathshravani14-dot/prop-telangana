@@ -336,6 +336,23 @@ async function main() {
     },
   });
 
+  const devJBInfra = await prisma.developer.create({
+    data: {
+      name: 'JB Infra Group',
+      slug: 'jb-infra-group',
+      logo: 'https://images.unsplash.com/photo-1541888946425-d0fbb186156f?auto=format&fit=crop&w=300&q=80',
+      coverImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      description: 'With 24 years of trusted excellence, JB Infra Group is one of Telangana\'s premier real estate development leaders specializing in mega HMDA, DTCP, and TG RERA approved integrated townships, luxury open villa plots, and resort-themed communities across prime Hyderabad growth corridors.',
+      website: 'https://www.jbinfraprojects.in',
+      phone: '+91 70138 73126',
+      email: 'jbinfra.sales25@gmail.com',
+      officeAddress: '# 7-1/B, 1st Floor, Sai Nagar Colony, Pedda Amberpet, Abdullapurmet Mdl., R.R. Dist. - 501 505, Telangana.',
+      experienceYears: 24,
+      verified: true,
+      reraRegistered: true,
+    },
+  });
+
   // 7. Amenities
   const amenitiesList = [
     { name: 'Grand Clubhouse (50,000+ Sq.Ft)', slug: 'grand-clubhouse', icon: 'Building2', category: 'LEISURE' },
@@ -470,6 +487,136 @@ async function main() {
       longitude: 78.1920,
       status: 'READY_TO_MOVE',
       featured: true,
+    },
+  });
+
+  const prjJBNatureValley = await prisma.project.create({
+    data: {
+      projectId: 'JB-PRJ-NV01',
+      name: "JB's Nature Valley",
+      slug: 'jbs-nature-valley-choutuppal',
+      description: 'Largest eco-friendly 710 Acres integrated satellite township near Hyderabad on Vijayawada 6-Lane Highway at Choutuppal. Featuring 40+ world-class amenities, 2 grand clubhouses (32,000 sq.ft), mini cricket ground, sports arena, and 9KM cycling & walking tracks.',
+      developerId: devJBInfra.id,
+      location: 'Choutuppal, Vijayawada Highway',
+      city: 'Hyderabad Outer',
+      district: 'Yadadri Bhuvanagiri',
+      projectType: 'PLOTTED_DEVELOPMENT',
+      totalArea: '710 Acres',
+      totalUnits: '3200 Plots',
+      plotSizes: '150 - 500 Sq.Yds',
+      minPrice: 1850000,
+      maxPrice: 6500000,
+      priceRange: '₹ 18.5 L - ₹ 65 L',
+      possessionDate: 'Ready for Construction',
+      reraNumber: 'P01800002990',
+      approvalDetails: 'DTCP & TG RERA Approved (LP No: 214/2020/H)',
+      connectivity: '6-Lane Highway Facing, 3 Min from Proposed Regional Ring Road (RRR), 28 Min from Ramoji Film City',
+      status: 'ONGOING',
+      featured: true,
+    },
+  });
+
+  const prjJBSereneCity = await prisma.project.create({
+    data: {
+      projectId: 'JB-PRJ-SC02',
+      name: "JB's Serene City",
+      slug: 'jbs-serene-city-adibatla',
+      description: 'Mega 650 Acres premium township with open plots and villas near Adibatla on Nagarjuna Sagar Highway. Strategically located near TCS, Foxconn, and Aerospace SEZ with a 5-Acre resort-style clubhouse.',
+      developerId: devJBInfra.id,
+      location: 'Near Adibatla, Sagar Highway',
+      city: 'Hyderabad',
+      district: 'Rangareddy',
+      projectType: 'GATED_COMMUNITY_VILLAS',
+      totalArea: '650 Acres',
+      totalUnits: '2800 Units',
+      plotSizes: '180 - 600 Sq.Yds',
+      minPrice: 3800000,
+      maxPrice: 18500000,
+      priceRange: '₹ 38 L - ₹ 1.85 Cr',
+      possessionDate: 'Ready to Move & Under Construction',
+      reraNumber: 'P02400008456',
+      approvalDetails: 'HMDA & TG RERA Approved (LP No.: 000021/LO/Plg/HMDA/2024)',
+      connectivity: 'Near BDL, OCTOPUS, TCS, Cognizant, Foxconn, 10 Min from ORR, 20 Min from RGI Airport',
+      status: 'ONGOING',
+      featured: true,
+    },
+  });
+
+  const prjJBSereneCounty = await prisma.project.create({
+    data: {
+      projectId: 'JB-PRJ-SCT03',
+      name: "JB's Serene County - I & II",
+      slug: 'jbs-serene-county-kongara-kalan',
+      description: 'Ultra-prime premium villa open plots in Kongara Kalan near Foxconn Mega Facility and Ratan Tata 330 Ft Road. 100% Vasthu compliant HMDA approved layout with complete underground infrastructure.',
+      developerId: devJBInfra.id,
+      location: 'Kongara Kalan, Near Foxconn',
+      city: 'Hyderabad',
+      district: 'Rangareddy',
+      projectType: 'PLOTTED_DEVELOPMENT',
+      totalArea: '120 Acres',
+      totalUnits: '650 Plots',
+      plotSizes: '200 - 450 Sq.Yds',
+      minPrice: 4200000,
+      maxPrice: 9500000,
+      priceRange: '₹ 42 L - ₹ 95 L',
+      possessionDate: 'Ready for Registration',
+      reraNumber: 'P02400009022',
+      approvalDetails: 'HMDA Approved Layout (LP No. 010475/LO/HMDA/2740/SMD/2024)',
+      connectivity: '5 Min to Foxconn, 5 Min to R.R. Collectorate, 5 Min to ORR & Wonderla',
+      status: 'READY_TO_MOVE',
+      featured: true,
+    },
+  });
+
+  const prjJBPristineCity = await prisma.project.create({
+    data: {
+      projectId: 'JB-PRJ-PC04',
+      name: "JB's Pristine City",
+      slug: 'jbs-pristine-city-vikarabad',
+      description: 'Serene layout with hill top view spanning 150+ Acres in Vikarabad. Luxury residential open villa plots with a magnificent 2-Acre resort-style clubhouse.',
+      developerId: devJBInfra.id,
+      location: 'Vikarabad, Hyderabad Growth Corridor',
+      city: 'Vikarabad',
+      district: 'Vikarabad',
+      projectType: 'PLOTTED_DEVELOPMENT',
+      totalArea: '150+ Acres',
+      totalUnits: '850 Plots',
+      plotSizes: '165 - 400 Sq.Yds',
+      minPrice: 1980000,
+      maxPrice: 4800000,
+      priceRange: '₹ 19.8 L - ₹ 48 L',
+      possessionDate: 'Ready for Construction',
+      reraNumber: 'P02100006305',
+      approvalDetails: 'DTCP & TG RERA Approved (TLP No: 0024/LO/3042/2023)',
+      connectivity: 'Close to District Collectorate, 300-Acre Genome Valley 2, 10 Min from Ananthagiri Hills',
+      status: 'ONGOING',
+      featured: true,
+    },
+  });
+
+  const prjJBPride = await prisma.project.create({
+    data: {
+      projectId: 'JB-PRJ-PR05',
+      name: "JB's Pride",
+      slug: 'jbs-pride-mominpet-shankarpally',
+      description: 'Venture located at Mominpet on Shankarpally Highway, in Telangana Government Pride Project E-Mobility Valley. Clubhouse with swimming pool, golf court, and lake view resorts.',
+      developerId: devJBInfra.id,
+      location: 'Mominpet, Shankarpally Highway',
+      city: 'Hyderabad West',
+      district: 'Sangareddy',
+      projectType: 'PLOTTED_DEVELOPMENT',
+      totalArea: '85 Acres',
+      totalUnits: '420 Units',
+      plotSizes: '200 - 500 Sq.Yds',
+      minPrice: 2400000,
+      maxPrice: 5800000,
+      priceRange: '₹ 24 L - ₹ 58 L',
+      possessionDate: 'Ready for Construction',
+      reraNumber: 'PO2100006626',
+      approvalDetails: 'DTCP & TG RERA Approved (TLP No. 115/2023/H)',
+      connectivity: 'On Shankarpally Highway, in Telangana E-Mobility Valley, Traffic-free to Mokila & Gachibowli',
+      status: 'ONGOING',
+      featured: false,
     },
   });
 

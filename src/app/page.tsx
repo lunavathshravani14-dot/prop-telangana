@@ -20,6 +20,8 @@ import {
   Sparkles,
 } from 'lucide-react';
 
+import { JB_PROPERTIES, JB_PROJECTS, JB_DEVELOPER } from '@/lib/jb-projects-data';
+
 export const revalidate = 60; // ISR cache every 60 seconds
 
 async function getHomeData() {
@@ -82,21 +84,33 @@ async function getHomeData() {
     ]);
 
     return {
-      featuredProperties,
-      featuredProjects,
-      popularLocations,
-      featuredDevelopers,
-      latestProperties,
+      featuredProperties: featuredProperties.length > 0 ? featuredProperties : JB_PROPERTIES,
+      featuredProjects: featuredProjects.length > 0 ? featuredProjects : JB_PROJECTS,
+      popularLocations: popularLocations.length > 0 ? popularLocations : [
+        { id: 'loc-1', name: 'Adibatla', slug: 'adibatla', type: 'LOCALITY', avgPriceSqft: 4500, _count: { properties: 12, projects: 2 } },
+        { id: 'loc-2', name: 'Choutuppal', slug: 'choutuppal', type: 'LOCALITY', avgPriceSqft: 2800, _count: { properties: 18, projects: 1 } },
+        { id: 'loc-3', name: 'Kongara Kalan', slug: 'kongara-kalan', type: 'LOCALITY', avgPriceSqft: 4200, _count: { properties: 10, projects: 2 } },
+        { id: 'loc-4', name: 'Vikarabad', slug: 'vikarabad', type: 'LOCALITY', avgPriceSqft: 2400, _count: { properties: 8, projects: 1 } },
+        { id: 'loc-5', name: 'Mominpet', slug: 'mominpet', type: 'LOCALITY', avgPriceSqft: 2600, _count: { properties: 6, projects: 1 } },
+      ],
+      featuredDevelopers: featuredDevelopers.length > 0 ? featuredDevelopers : [JB_DEVELOPER],
+      latestProperties: latestProperties.length > 0 ? latestProperties : JB_PROPERTIES,
       latestBlogs,
     };
   } catch (err) {
-    console.error('Home data error:', err);
+    console.warn('Database offline on homepage, serving official JB Infra portfolios:', err);
     return {
-      featuredProperties: [],
-      featuredProjects: [],
-      popularLocations: [],
-      featuredDevelopers: [],
-      latestProperties: [],
+      featuredProperties: JB_PROPERTIES,
+      featuredProjects: JB_PROJECTS,
+      popularLocations: [
+        { id: 'loc-1', name: 'Adibatla', slug: 'adibatla', type: 'LOCALITY', avgPriceSqft: 4500, _count: { properties: 12, projects: 2 } },
+        { id: 'loc-2', name: 'Choutuppal', slug: 'choutuppal', type: 'LOCALITY', avgPriceSqft: 2800, _count: { properties: 18, projects: 1 } },
+        { id: 'loc-3', name: 'Kongara Kalan', slug: 'kongara-kalan', type: 'LOCALITY', avgPriceSqft: 4200, _count: { properties: 10, projects: 2 } },
+        { id: 'loc-4', name: 'Vikarabad', slug: 'vikarabad', type: 'LOCALITY', avgPriceSqft: 2400, _count: { properties: 8, projects: 1 } },
+        { id: 'loc-5', name: 'Mominpet', slug: 'mominpet', type: 'LOCALITY', avgPriceSqft: 2600, _count: { properties: 6, projects: 1 } },
+      ],
+      featuredDevelopers: [JB_DEVELOPER],
+      latestProperties: JB_PROPERTIES,
       latestBlogs: [],
     };
   }

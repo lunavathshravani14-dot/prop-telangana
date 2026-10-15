@@ -3,11 +3,13 @@ import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import PropertyCard from '@/components/PropertyCard';
 
+import { JB_PROPERTIES } from '@/lib/jb-projects-data';
+
 export const revalidate = 60;
 
 export const metadata = {
   title: 'HMDA & DTCP Approved Open Plots in Hyderabad | PropTelangana',
-  description: 'Verified gated layout open plots and villa plots in Mokila, Shankarpally, Yadadri, and Shadnagar with clear bank loan sanctions.',
+  description: 'Verified gated layout open plots and villa plots in Adibatla, Choutuppal, Kongara Kalan, Vikarabad, and Mominpet with clear bank loan sanctions.',
 };
 
 export default async function PlotsPage() {
@@ -25,7 +27,11 @@ export default async function PlotsPage() {
       },
     });
   } catch (err) {
-    console.error('PlotsPage build/fetch error:', err);
+    console.warn('PlotsPage using JB Infra plots fallback:', err);
+  }
+
+  if (properties.length === 0) {
+    properties = JB_PROPERTIES.filter((p) => p.propertyType === 'PLOT');
   }
 
   return (
